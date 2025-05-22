@@ -205,6 +205,7 @@ tool_properties_get_databases_json = "[]"  # No input properties
     toolProperties=tool_properties_get_databases_json,
 )
 def get_databases_tool(context: str) -> str:
+    """Gets the list of all the databases in a server instance."""
     logging.info("get_databases_tool invoked.")
     query = "SELECT datname FROM pg_database WHERE datistemplate = false;"
     return _execute_query(query)
@@ -218,6 +219,7 @@ def get_databases_tool(context: str) -> str:
     toolProperties="[]",
 )
 def get_schemas_tool(context: str) -> str:
+    """Gets schemas of all the tables."""
     logging.info("get_schemas_tool invoked.")
     query = """
     SELECT
@@ -257,6 +259,7 @@ tool_properties_query_data_json = json.dumps(
     toolProperties=tool_properties_query_data_json,
 )
 def query_data_tool(context: str) -> str:
+    """Runs read queries on a database."""
     logging.info("query_data_tool invoked.")
 
     args = _parse_context_args(context, [_QUERY_SQL_PROPERTY])
@@ -287,6 +290,7 @@ def query_data_tool(context: str) -> str:
     toolProperties="[]",
 )
 def get_all_keys_tool(context: str) -> str:
+    """Gets all keys and constraints of all tables"""
     logging.info("get_all_keys_tool invoked.")
 
     query = """
