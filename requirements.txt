@@ -1,0 +1,8 @@
+azure-functions
+langchain-mcp-adapters
+langchain-openai
+langgraph
+mcp[cli]
+starlette
+uvicorn
+psycopg2_binary

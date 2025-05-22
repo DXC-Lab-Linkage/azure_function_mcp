@@ -1,0 +1,19 @@
+[project]
+name = "sse-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "azure-functions>=1.23.0",
+    "basedpyright>=1.29.1",
+    "ipython>=9.2.0",
+    "langchain-mcp-adapters>=0.0.11",
+    "langchain-openai>=0.3.16",
+    "langgraph>=0.4.3",
+    "mcp[cli]>=1.8.1",
+    "psycopg2-binary>=2.9.10",
+    "ruff>=0.11.10",
+    "starlette>=0.46.2",
+    "uvicorn>=0.34.2",
+]
