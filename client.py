@@ -14,7 +14,10 @@ load_dotenv()
 
 
 async def main():
-    async with sse_client("http://localhost:7071/runtime/webhooks/mcp/sse") as (
+    azure_func_uri = os.environ.get(
+        "AZURE_FUNC_URI", "http://localhost:7071/runtime/webhooks/mcp/sse"
+    )
+    async with sse_client(azure_func_uri) as (
         read,
         write,
     ):
