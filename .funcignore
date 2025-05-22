@@ -2,3 +2,4 @@
 .env
 .git
 __pycache__/
+shared_code/__pycache__/
