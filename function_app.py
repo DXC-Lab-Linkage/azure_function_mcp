@@ -277,3 +277,57 @@ def query_data_tool(context: str) -> str:
         )
 
     return _execute_query(sql_query)
+
+
+@app.generic_trigger(
+    arg_name="context",
+    type="mcpToolTrigger",
+    toolName="get_all_keys_tool",
+    description="Gets all keys and constraints of all tables in the 'public' schema of a specified database.",
+    toolProperties="[]",
+)
+def get_all_keys_tool(context: str) -> str:
+    logging.info("get_all_keys_tool invoked.")
+
+    query = """
+    SELECT
+        tc.table_name,
+        tc.constraint_name,
+        CASE tc.constraint_type
+            WHEN 'PRIMARY KEY' THEN 'Primary Key'
+            WHEN 'FOREIGN KEY' THEN 'Foreign Key'
+            WHEN 'UNIQUE' THEN 'Unique Constraint'
+            ELSE tc.constraint_type
+        END AS constraint_type,
+
+        array_agg(kcu.column_name ORDER BY kcu.ordinal_position) AS columns,
+
+        -- Only for foreign keys
+        ccu.table_name AS foreign_table_name,
+        array_agg(ccu.column_name ORDER BY kcu.position_in_unique_constraint) AS foreign_columns
+
+    FROM
+        information_schema.table_constraints tc
+    JOIN
+        information_schema.key_column_usage kcu
+        ON tc.constraint_catalog = kcu.constraint_catalog
+        AND tc.constraint_schema = kcu.constraint_schema
+        AND tc.constraint_name = kcu.constraint_name
+    LEFT JOIN
+        information_schema.constraint_column_usage ccu
+        ON tc.constraint_catalog = ccu.constraint_catalog
+        AND tc.constraint_schema = ccu.constraint_schema
+        AND tc.constraint_name = ccu.constraint_name
+    WHERE
+        tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY', 'UNIQUE')
+        AND tc.table_schema NOT IN ('pg_catalog', 'information_schema', 'cron')
+    GROUP BY
+        tc.table_name,
+        tc.constraint_name,
+        tc.constraint_type,
+        ccu.table_name
+    ORDER BY
+        tc.table_name,
+        tc.constraint_name;
+    """
+    return _execute_query(query)
